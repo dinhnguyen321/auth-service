@@ -8,6 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { RolePermission } from './role-permission';
+import { UserRole } from './user-role.entity';
 
 @Entity('roles')
 export class Role {
@@ -31,6 +32,9 @@ export class Role {
 
   @OneToMany(() => RolePermission, (rolePermission) => rolePermission.role)
   rolePermissions!: RolePermission[];
+
+  @OneToMany(() => UserRole, (userRole) => userRole.role)
+  userRoles!: UserRole[];
 
   @UpdateDateColumn()
   updatedAt!: Date;

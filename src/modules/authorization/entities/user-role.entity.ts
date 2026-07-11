@@ -1,44 +1,61 @@
-// import { User } from 'src/modules/user/entities/user.entity';
-// import {
-//   Column,
-//   CreateDateColumn,
-//   Entity,
-//   ManyToOne,
-//   PrimaryColumn,
-// } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryColumn,
+} from 'typeorm';
+import { Role } from './role.entity';
+import { User } from '../../user/entities/user.entity';
 
-// @Entity('user_roles')
-// export class UserRole {
-//   @PrimaryColumn({
-//     name: 'user_id',
-//   })
-//   user_id!: string;
+@Entity('user_roles')
+export class UserRole {
+  @PrimaryColumn({
+    name: 'user_id',
+  })
+  userId!: string;
 
-//   @PrimaryColumn({
-//     name: 'role_id',
-//   })
-//   role_id!: string;
+  @PrimaryColumn({
+    name: 'role_id',
+  })
+  roleId!: string;
 
-//   @CreateDateColumn()
-//   assignedAt!: Date;
+  @CreateDateColumn({
+    type: 'timestamp',
+    nullable: true,
+  })
+  assignedAt!: Date;
 
-//   @Column({
-//     length: 100,
-//   })
-//   assignedBy!: string;
+  @Column({
+    name: 'assigned_by',
+  })
+  assignedBy!: string;
 
-//   @Column({
-//     length: 100,
-//   })
-//   revokedBy!: string;
+  @Column({
+    name: 'revoked_by',
+    nullable: true,
+  })
+  revokedBy!: string;
 
-//   @Column({
-//     type: 'boolean',
-//   })
-//   isActive!: boolean;
+  @Column({
+    type: 'boolean',
+    default: true,
+  })
+  isActive!: boolean;
 
-//   @CreateDateColumn()
-//   revokedAt!: Date;
+  @CreateDateColumn()
+  revokedAt!: Date;
 
-//   // @ManyToOne(() => User, (user) => user.id)
-// }
+  @ManyToOne(() => User, (user) => user.userRoles)
+  @JoinColumn({
+    name: 'user_id',
+  })
+  user!: User;
+
+  @ManyToOne(() => Role, (role) => role.userRoles)
+  @JoinColumn({
+    name: 'role_id',
+  })
+  role!: Role;
+}
