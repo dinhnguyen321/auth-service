@@ -11,6 +11,11 @@ import { UserCredential } from './user-credential.entity';
 import { UserProfiles } from './user-profile.entity';
 import { UserRole } from '../../authorization/entities/user-role.entity';
 
+export enum UserStatus {
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
+  BLOCKED = 'BLOCKED',
+}
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
@@ -38,14 +43,22 @@ export class User {
   avatarUrl!: string;
 
   @Column({
-    length: 255,
+    type: 'enum',
+    enum: UserStatus,
+    default: UserStatus.ACTIVE,
   })
-  status!: string;
+  status!: UserStatus;
 
-  @CreateDateColumn()
+  @CreateDateColumn({
+    type: 'timestamp',
+    nullable: true,
+  })
   emailVerifiedAt!: Date;
 
-  @CreateDateColumn()
+  @CreateDateColumn({
+    type: 'timestamp',
+    nullable: true,
+  })
   phoneVerifiedAt!: Date;
 
   @CreateDateColumn()
