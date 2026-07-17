@@ -22,11 +22,17 @@ export class UserCredential {
   })
   passwordHash!: string;
 
-  @CreateDateColumn()
-  passwordChangedAt!: Date;
+  @Column({
+    type: 'timestamptz',
+    nullable: true,
+  })
+  passwordChangedAt!: Date | null;
 
-  @CreateDateColumn()
-  lastLoginAt!: Date;
+  @Column({
+    type: 'timestamptz',
+    nullable: true,
+  })
+  lastLoginAt!: Date | null;
 
   @Column({
     type: 'int',
@@ -34,8 +40,11 @@ export class UserCredential {
   })
   failedLoginAttempts!: number;
 
-  @CreateDateColumn()
-  lockedUntil!: Date;
+  @Column({
+    type: 'timestamptz',
+    nullable: true,
+  })
+  lockedUntil!: Date | null;
 
   @CreateDateColumn()
   createdAt!: Date;

@@ -49,14 +49,14 @@ export class User {
   })
   status!: UserStatus;
 
-  @CreateDateColumn({
-    type: 'timestamp',
+  @Column({
+    type: 'timestamptz',
     nullable: true,
   })
   emailVerifiedAt!: Date;
 
-  @CreateDateColumn({
-    type: 'timestamp',
+  @Column({
+    type: 'timestamptz',
     nullable: true,
   })
   phoneVerifiedAt!: Date;
