@@ -13,6 +13,7 @@ import { UserCredential } from '../user/entities/user-credential.entity';
 import { RegisterUserDto } from './dto/register.dto';
 
 import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class AuthService {
   private readonly saltRounds = 10;
@@ -27,6 +28,8 @@ export class AuthService {
 
     @InjectRepository(UserCredential)
     private readonly credentialRepository: Repository<UserCredential>,
+
+    private readonly jwtService: JwtService,
   ) {}
 
   async registerUser(dto: RegisterUserDto) {
@@ -70,7 +73,6 @@ export class AuthService {
 
   async loginUser(dto: loginDto) {
     const { email, password } = dto;
-    console.log('email, password', email, password);
     const user = await this.findUserByEmail(email);
 
     const credential = await this.findCredential(user.id);
@@ -87,8 +89,16 @@ export class AuthService {
 
     await this.handleLoginSuccess(user.id);
 
+    const payload = {
+      sub: user.id,
+      email: user.email,
+    };
+
+    const accessToken = await this.jwtService.signAsync(payload);
+
     return {
       message: 'Login successfully',
+      accessToken,
     };
   }
 

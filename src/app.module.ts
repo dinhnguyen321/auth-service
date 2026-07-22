@@ -7,7 +7,6 @@ import { UserModule } from './modules/user/user.module';
 // import { RefreshTokenModule } from './modules/refresh-token/refresh-token.module';
 import { AuthorizationModule } from './modules/authorization/authorization.module';
 import { AuthModule } from './modules/auth/auth.module';
-// import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -19,7 +18,6 @@ import { AuthModule } from './modules/auth/auth.module';
     UserModule,
     AuthorizationModule,
     AuthModule,
-    // AuthModule,
     // RefreshTokenModule,
   ],
 })

@@ -33,11 +33,13 @@ export class User {
   fullName!: string;
 
   @Column({
+    nullable: true,
     length: 20,
   })
   phone!: string;
 
   @Column({
+    nullable: true,
     length: 255,
   })
   avatarUrl!: string;
@@ -67,7 +69,7 @@ export class User {
   @UpdateDateColumn()
   updatedAt!: Date;
 
-  @OneToOne(() => UserCredential, (credential) => credential.user_id)
+  @OneToOne(() => UserCredential, (credential) => credential.user)
   credential!: UserCredential;
 
   @OneToOne(() => UserProfiles, (profile) => profile.user)
