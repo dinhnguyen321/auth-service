@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsPhoneNumber } from 'class-validator';
+import { IsEmail, IsPhoneNumber, IsString } from 'class-validator';
 
 export class CreateUserDto {
   @ApiProperty({
@@ -13,6 +13,7 @@ export class CreateUserDto {
     example: 'Daniel',
     description: 'Họ và tên',
   })
+  @IsString()
   fullName!: string;
 
   @ApiProperty({
@@ -27,5 +28,6 @@ export class CreateUserDto {
     description: 'Ảnh đại diện',
     required: false,
   })
+  @IsString()
   avatarUrl?: string;
 }

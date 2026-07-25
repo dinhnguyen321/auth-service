@@ -22,7 +22,6 @@ export class AuthController {
   }
 
   @Post('login')
-  @UseGuards(JwtAuthGuard)
   loginUser(@Body() dto: loginDto) {
     return this.authService.loginUser(dto);
   }
@@ -31,7 +30,6 @@ export class AuthController {
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
   profile(@CurrentUser() user: User) {
-    console.log('user_controller_auth: ', user);
     return user;
   }
 }

@@ -12,10 +12,10 @@ import { Permission } from './permission.entity';
 @Entity('role_permissions')
 export class RolePermission {
   @PrimaryColumn()
-  role_id!: number;
+  role_id!: string;
 
   @PrimaryColumn()
-  permission_id!: number;
+  permission_id!: string;
 
   @Column()
   assignedBy!: string;
