@@ -3,7 +3,7 @@ import { IsEmail, IsPhoneNumber } from 'class-validator';
 
 export class RegisterUserDto {
   @ApiProperty({
-    example: 'daniel@gmail.com',
+    example: 'admin@gmail.com',
     description: 'Email của người dùng',
   })
   @IsEmail()

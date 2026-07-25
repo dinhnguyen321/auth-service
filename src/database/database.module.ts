@@ -26,4 +26,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   ],
   // providers: [DatabaseService],
 })
-export class DatabaseModule {}
+export class DatabaseModule {
+  constructor() {
+    console.log('✅ DatabaseModule Loaded');
+  }
+}

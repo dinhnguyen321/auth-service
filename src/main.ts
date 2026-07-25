@@ -1,15 +1,32 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true, // Tự động loại bỏ các field thừa không được định nghĩa trong DTO
+      transform: true, // Tự động chuyển đổi kiểu dữ liệu (ví dụ chuỗi số thành kiểu number)
+    }),
+  );
+
+  // Cấu hình Swagger
   const config = new DocumentBuilder()
     .setTitle('Auth Service')
     .setDescription('API document')
     .setVersion('1.0')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        description: 'Nhập access token',
+      },
+      'access-token',
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
