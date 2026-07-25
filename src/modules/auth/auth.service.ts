@@ -1,5 +1,6 @@
 import { loginDto } from './dto/login.dto';
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   UnauthorizedException,
@@ -34,6 +35,7 @@ export class AuthService {
 
   async registerUser(dto: RegisterUserDto) {
     const { email, password, fullName, phone, avatarUrl } = dto;
+    console.log('dto', dto);
 
     const existingUser = await this.userRepository.findOne({
       where: {
@@ -45,6 +47,9 @@ export class AuthService {
       throw new ConflictException('Email already exists');
     }
 
+    if (!password) {
+      throw new BadRequestException('Password is required');
+    }
     const passwordHash = await bcrypt.hash(password, this.saltRounds);
 
     return await this.dataSource.transaction(async (manager) => {
