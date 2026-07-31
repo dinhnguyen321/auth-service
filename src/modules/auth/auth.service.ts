@@ -35,7 +35,6 @@ export class AuthService {
 
   async registerUser(dto: RegisterUserDto) {
     const { email, password, fullName, phone, avatarUrl } = dto;
-    console.log('dto', dto);
 
     const existingUser = await this.userRepository.findOne({
       where: {

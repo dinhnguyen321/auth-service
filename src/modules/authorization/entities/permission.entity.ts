@@ -10,8 +10,8 @@ import { RolePermission } from './role-permission';
 
 @Entity('permissions')
 export class Permission {
-  @PrimaryGeneratedColumn('uuid')
-  id!: string;
+  @PrimaryGeneratedColumn('increment')
+  id!: number;
 
   @Column({
     unique: true,

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 
 import { Permission } from 'src/modules/authorization/entities/permission.entity';
 import { RolePermission } from 'src/modules/authorization/entities/role-permission';
@@ -9,12 +9,19 @@ import { Role } from 'src/modules/authorization/entities/role.entity';
 
 import { ROLE_SEED } from './seeds/role.seed';
 import { ROLE_PERMISSION_MAP } from './seeds/role-permission.seed';
-import { PERMISSION_SEED } from './seeds/permission.seed';
+import { PERMISSIONS_SEED } from './seeds/permissions.seed';
+import { USERS_SEED } from './seeds/users.seed';
+import { User } from '../modules/user/entities/user.entity';
+import { UserCredential } from '../modules/user/entities/user-credential.entity';
 
+import * as bcrypt from 'bcrypt';
+import { UserRole } from 'src/modules/authorization/entities/user-role.entity';
 @Injectable()
 export class SeedService {
   private readonly logger = new Logger(SeedService.name);
   constructor(
+    private readonly dataSource: DataSource,
+
     @InjectRepository(Role)
     private readonly roleRepository: Repository<Role>,
 
@@ -23,6 +30,15 @@ export class SeedService {
 
     @InjectRepository(RolePermission)
     private readonly rolePermissionRepository: Repository<RolePermission>,
+
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+
+    @InjectRepository(UserRole)
+    private readonly userRoleRepository: Repository<UserRole>,
+
+    @InjectRepository(UserCredential)
+    private readonly credentialRepository: Repository<UserCredential>,
   ) {}
 
   async seed() {
@@ -30,6 +46,8 @@ export class SeedService {
     await this.seedRoles();
     await this.seedPermissions();
     await this.seedRolePermissions();
+    await this.seedRolePermissions();
+    await this.seedUsers();
   }
 
   private async seedRoles(): Promise<void> {
@@ -51,7 +69,7 @@ export class SeedService {
     }
   }
   private async seedPermissions(): Promise<void> {
-    for (const permission of PERMISSION_SEED) {
+    for (const permission of PERMISSIONS_SEED) {
       const code = `${permission.module}:${permission.action}`;
       const exists = await this.permissionRepository.findOne({
         where: {
@@ -88,7 +106,6 @@ export class SeedService {
     >) {
       const role = roleMap.get(roleName);
       if (!role) continue;
-
       const permissionCodes = ROLE_PERMISSION_MAP[roleName];
 
       for (const code of permissionCodes) {
@@ -124,5 +141,52 @@ export class SeedService {
         this.logger.log(`Assigned ${permission.code} to ${role.name}`); // note lại các flow trên gpt
       }
     }
+  }
+
+  private async seedUsers() {
+    const getUsers = await this.userRepository.find();
+    const roles = await this.roleRepository.find();
+
+    const userMap = new Set(getUsers.map((u) => u.email));
+    const roleMap = new Map(roles.map((u) => [u.name, u]));
+    for (const user of USERS_SEED) {
+      if (userMap.has(user.email)) {
+        this.logger.log(`Email:${user.email} already exists`);
+        continue;
+      }
+
+      const passwordHash = await bcrypt.hash(user.password, 10);
+
+      const role = roleMap.get(user.role);
+      if (!role) {
+        throw new Error(`Role ${user.role} not found`);
+      }
+
+      await this.dataSource.transaction(async (manager) => {
+        const users = manager.create(User, {
+          email: user.email,
+          fullName: user.fullName,
+        });
+        const saveUsers = await manager.save(users);
+
+        const userRole = manager.create(UserRole, {
+          user: saveUsers,
+          role,
+          assignedBy: user.assignedBy,
+        });
+        await manager.save(userRole);
+
+        const credentials = manager.create(UserCredential, {
+          user_id: saveUsers.id,
+          passwordHash: passwordHash,
+          failedLoginAttempts: 0,
+        });
+        await manager.save(credentials);
+      });
+      userMap.add(user.email);
+    }
+    return {
+      message: 'Register seed data successfully',
+    };
   }
 }
