@@ -49,7 +49,9 @@ export class AuthorizationService {
     });
     if (validRoleNames.length !== name.length) {
       const roleNames = validRoleNames.map((role) => role.id);
-      const invalidRoleNames = name.filter((id) => !roleNames.includes(id));
+      const invalidRoleNames = name.filter(
+        (id) => !roleNames.includes(Number(id)),
+      );
       throw new BadRequestException(
         `These Roles do not exist ${invalidRoleNames.join(', ')}`,
       );
@@ -59,8 +61,8 @@ export class AuthorizationService {
 
       const userRoles = validRoleNames.map((role) => {
         return manager.create(UserRole, {
-          userId,
-          roleId: role.id,
+          user,
+          role,
           assignedBy: CurrentUserId,
           isActive: true,
         });

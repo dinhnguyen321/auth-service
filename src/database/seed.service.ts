@@ -3,19 +3,21 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 
-import { Permission } from 'src/modules/authorization/entities/permission.entity';
-import { RolePermission } from 'src/modules/authorization/entities/role-permission';
-import { Role } from 'src/modules/authorization/entities/role.entity';
+import { Permission } from '../modules/authorization/entities/permission.entity';
+import { RolePermission } from '../modules/authorization/entities/role-permission';
+
+import { Role } from '../modules/authorization/entities/role.entity';
+import { UserRole } from '../modules/authorization/entities/user-role.entity';
+
+import { User } from '../modules/user/entities/user.entity';
+import { UserCredential } from '../modules/user/entities/user-credential.entity';
 
 import { ROLE_SEED } from './seeds/role.seed';
 import { ROLE_PERMISSION_MAP } from './seeds/role-permission.seed';
 import { PERMISSIONS_SEED } from './seeds/permissions.seed';
 import { USERS_SEED } from './seeds/users.seed';
-import { User } from '../modules/user/entities/user.entity';
-import { UserCredential } from '../modules/user/entities/user-credential.entity';
 
 import * as bcrypt from 'bcrypt';
-import { UserRole } from 'src/modules/authorization/entities/user-role.entity';
 @Injectable()
 export class SeedService {
   private readonly logger = new Logger(SeedService.name);
@@ -33,9 +35,6 @@ export class SeedService {
 
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-
-    @InjectRepository(UserRole)
-    private readonly userRoleRepository: Repository<UserRole>,
 
     @InjectRepository(UserCredential)
     private readonly credentialRepository: Repository<UserCredential>,

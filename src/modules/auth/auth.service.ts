@@ -8,13 +8,15 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 
-import { User, UserStatus } from '../user/entities/user.entity';
-import { UserCredential } from '../user/entities/user-credential.entity';
+import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
 
 import { RegisterUserDto } from './dto/register.dto';
 
-import * as bcrypt from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';
+import { User, UserStatus } from '../user/entities/user.entity';
+import { UserCredential } from '../user/entities/user-credential.entity';
+import { Role } from '../authorization/entities/role.entity';
+import { UserRole } from '../authorization/entities/user-role.entity';
 @Injectable()
 export class AuthService {
   private readonly saltRounds = 10;
@@ -26,6 +28,9 @@ export class AuthService {
 
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+
+    @InjectRepository(Role)
+    private readonly roleRepository: Repository<Role>,
 
     @InjectRepository(UserCredential)
     private readonly credentialRepository: Repository<UserCredential>,
@@ -60,6 +65,23 @@ export class AuthService {
         status: UserStatus.ACTIVE,
       });
       const saveUser = await manager.save(user);
+
+      const defaultRole = await this.roleRepository.findOne({
+        where: {
+          name: 'USER',
+        },
+      });
+
+      if (!defaultRole) {
+        throw new BadRequestException('Default role User not found');
+      }
+
+      const userRole = manager.create(UserRole, {
+        user: saveUser,
+        role: defaultRole,
+        assignedBy: 'SYSTEM',
+      });
+      await manager.save(userRole);
 
       const credential = manager.create(UserCredential, {
         user_id: saveUser.id,

@@ -12,6 +12,5 @@ export class AssignRolesDto {
     each: true,
     message: 'Mõi phần tử trong mảng phải là một chuỗi ký tự',
   })
-  // @IsUUID('4')
   name!: string[];
 }

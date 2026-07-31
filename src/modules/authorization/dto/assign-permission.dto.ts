@@ -9,7 +9,7 @@ export class AssignPermissionsDto {
     each: true,
     message: 'Phần tử phải là một chuỗi ký tự',
   })
-  roleId!: string;
+  roleId!: number;
 
   @ApiProperty({
     example: [
@@ -21,5 +21,5 @@ export class AssignPermissionsDto {
   })
   @IsArray({ message: 'PermissionIds phải là 1 mảng' })
   @IsNotEmpty({ message: 'PermissionIds không được để trống' })
-  permissionIds!: string[];
+  permissionIds!: number[];
 }
