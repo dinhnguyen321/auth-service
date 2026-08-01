@@ -1,11 +1,24 @@
-import { Body, Controller, Param, Put, UseGuards } from '@nestjs/common';
-import { AssignRolesDto } from './dto/assign-role.dto';
-import { AuthorizationService } from './authorization.services';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+
+import { AssignRolesDto } from './dto/assign-role.dto';
+import { AssignPermissionsDto } from './dto/assign-permission.dto';
+
+import { User } from '../user/entities/user.entity';
+
+import { AuthorizationService } from './authorization.services';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
-import { User } from '../user/entities/user.entity';
-import { AssignPermissionsDto } from './dto/assign-permission.dto';
+import { CreateRoleDto } from './dto/create-role.dto';
+import { UpdateRoleDto } from './dto/update-role.dto';
 
 @ApiTags('Authorization')
 @Controller('users')
@@ -31,5 +44,25 @@ export class AuthorizationController {
     @CurrentUser() currentUserId: User,
   ) {
     return this.authorizationService.assignPermissions(dto, currentUserId.id);
+  }
+
+  @Get('/roles/all')
+  findAllRoles() {
+    return this.authorizationService.findAllRoles();
+  }
+
+  @Get('/role/:id')
+  findRoleById(@Param('id') id: number) {
+    return this.authorizationService.findRoleById(id);
+  }
+
+  @Post('/role')
+  createRole(@Body() dto: CreateRoleDto) {
+    return this.authorizationService.createRole(dto);
+  }
+
+  @Put('/role/:id')
+  updateRole(@Param('id') id: number, @Body() dto: UpdateRoleDto) {
+    return this.authorizationService.updateRole(id, dto);
   }
 }

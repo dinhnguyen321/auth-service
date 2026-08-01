@@ -14,6 +14,8 @@ import { UserRole } from './entities/user-role.entity';
 import { AssignPermissionsDto } from './dto/assign-permission.dto';
 import { Permission } from './entities/permission.entity';
 import { RolePermission } from './entities/role-permission';
+import { CreateRoleDto } from './dto/create-role.dto';
+import { UpdateRoleDto } from './dto/update-role.dto';
 
 @Injectable()
 export class AuthorizationService {
@@ -150,5 +152,47 @@ export class AuthorizationService {
         })),
       },
     };
+  }
+
+  async findAllRoles(): Promise<Role[]> {
+    return await this.roleRepository.find();
+  }
+
+  async findRoleById(id: number): Promise<Role | null> {
+    return await this.roleRepository.findOne({
+      where: {
+        id: id,
+      },
+    });
+  }
+
+  async createRole(dto: CreateRoleDto) {
+    const role = await this.roleRepository.findOne({
+      where: {
+        name: dto.name,
+      },
+    });
+    if (role) {
+      throw new NotFoundException('Role already exists');
+    }
+    const createRole = this.roleRepository.create({
+      name: dto.name,
+      description: dto.description,
+    });
+    return await this.roleRepository.save(createRole);
+  }
+
+  async updateRole(id: number, dto: UpdateRoleDto) {
+    const role = await this.roleRepository.findOne({
+      where: {
+        id: id,
+      },
+    });
+    if (!role) {
+      throw new NotFoundException('Role not already exists');
+    }
+
+    Object.assign(role, dto);
+    return await this.roleRepository.save(role);
   }
 }

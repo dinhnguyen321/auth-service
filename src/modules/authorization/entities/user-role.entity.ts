@@ -14,12 +14,12 @@ export class UserRole {
   @PrimaryColumn({
     name: 'user_id',
   })
-  userId!: string;
+  userId!: number;
 
   @PrimaryColumn({
     name: 'role_id',
   })
-  roleId!: string;
+  roleId!: number;
 
   @CreateDateColumn({
     type: 'timestamp',
