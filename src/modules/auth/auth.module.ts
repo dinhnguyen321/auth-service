@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../user/entities/user.entity';
 import { UserCredential } from '../user/entities/user-credential.entity';
 import { Role } from '../authorization/entities/role.entity';
+import { UserRole } from '../authorization/entities/user-role.entity';
 
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
@@ -18,7 +19,7 @@ import { UserService } from '../user/user.service';
 @Module({
   imports: [
     PassportModule,
-    TypeOrmModule.forFeature([User, UserCredential, Role]),
+    TypeOrmModule.forFeature([User, UserCredential, Role, UserRole]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
 

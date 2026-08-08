@@ -27,17 +27,21 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(payload: JwtPayload) {
     console.log('payload in Strategy: ', payload);
-    // const userRepository = this.userService.getRepository(User);
-    const user = await this.userService.findOne(payload.sub);
-    //   relations: {
-    //     userRoles: {
-    //       role: true,
-    //     },
-    //   },
-    console.log('user in Strategy: ', user);
-    if (!user) {
+    // const user = await this.userService.findOne(payload.sub);
+    const userRole = await this.userService.findOneWithRoles(payload.sub);
+    // console.log('user in Strategy: ', user);
+    console.log(
+      'User roles from auth:',
+      userRole,
+      userRole?.userRoles?.map((userRole) => ({
+        roleId: userRole.roleId,
+        roleName: userRole.role?.name,
+        isActive: userRole.isActive,
+      })),
+    );
+    if (!userRole) {
       throw new UnauthorizedException();
     }
-    return user;
+    return userRole;
   }
 }

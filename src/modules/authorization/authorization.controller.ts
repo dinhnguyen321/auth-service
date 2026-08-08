@@ -19,6 +19,7 @@ import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
+import { Roles } from './roles/roles.decorators';
 
 @ApiTags('Authorization')
 @Controller('users')
@@ -28,6 +29,7 @@ export class AuthorizationController {
   @Put(':id/roles')
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
+  @Roles('ADMIN')
   assignRoles(
     @Param('id') userId: string,
     @Body() dto: AssignRolesDto,

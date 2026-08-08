@@ -11,6 +11,9 @@ import { JwtAuthGuard } from './guard/jwt-auth.guard';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { User } from '../user/entities/user.entity';
 
+import { RolesGuard } from '../authorization/roles/roles.guard';
+import { Roles } from '../authorization/roles/roles.decorators';
+
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
@@ -28,7 +31,8 @@ export class AuthController {
 
   @Get('profile')
   @ApiBearerAuth('access-token')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
   profile(@CurrentUser() user: User) {
     return user;
   }
