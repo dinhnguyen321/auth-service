@@ -44,11 +44,11 @@ export class UserRole {
   })
   isActive!: boolean;
 
-  @CreateDateColumn({
+  @Column({
     type: 'timestamp',
     nullable: true,
   })
-  revokedAt!: Date;
+  revokedAt!: Date | null;
 
   @ManyToOne(() => User, (user) => user.userRoles)
   @JoinColumn({

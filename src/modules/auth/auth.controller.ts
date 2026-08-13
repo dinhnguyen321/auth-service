@@ -9,11 +9,11 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
 
 import { CurrentUser } from './decorators/current-user.decorator';
-import { User } from '../user/entities/user.entity';
 
 import { RolesGuard } from '../authorization/roles/roles.guard';
 import { Roles } from '../authorization/roles/roles.decorators';
 
+import { User } from '../user/entities/user.entity';
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
@@ -34,6 +34,6 @@ export class AuthController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   profile(@CurrentUser() user: User) {
-    return user;
+    return this.authService.getProfileUser(user);
   }
 }

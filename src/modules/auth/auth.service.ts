@@ -17,6 +17,8 @@ import { User, UserStatus } from '../user/entities/user.entity';
 import { UserCredential } from '../user/entities/user-credential.entity';
 import { Role } from '../authorization/entities/role.entity';
 import { UserRole } from '../authorization/entities/user-role.entity';
+import { ProfileResponseDTO } from './dto/profileResponse.dto';
+// import { ProfileResponseDTO } from './dto/profileResponse.dto';
 @Injectable()
 export class AuthService {
   private readonly saltRounds = 10;
@@ -126,6 +128,26 @@ export class AuthService {
       message: 'Login successfully',
       accessToken,
     };
+  }
+
+  getProfileUser(profile: User) {
+    const roles = profile.userRoles // Xử lý dữ liệu entity
+      .filter((userRole) => userRole.isActive)
+      .map((userRole) => ({
+        id: String(userRole.role.id),
+        name: userRole.role.name,
+      }));
+    const profileUser: ProfileResponseDTO = {
+      id: profile.id,
+      email: profile.email,
+      fullName: profile.fullName,
+      phone: profile.phone,
+      avatarUrl: profile.avatarUrl,
+      status: profile.status,
+      roles: roles,
+    };
+
+    return profileUser;
   }
 
   private async findUserByEmail(email: string): Promise<User> {

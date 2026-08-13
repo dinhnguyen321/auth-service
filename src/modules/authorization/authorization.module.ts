@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Role } from './entities/role.entity';
 import { UserRole } from './entities/user-role.entity';
 import { AuthorizationController } from './authorization.controller';
-import { AuthorizationService } from './authorization.services';
+import { AuthorizationService } from './authorization.service';
 import { UserService } from '../user/user.service';
 import { User } from '../user/entities/user.entity';
 

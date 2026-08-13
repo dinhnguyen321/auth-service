@@ -14,8 +14,10 @@ import { AssignPermissionsDto } from './dto/assign-permission.dto';
 
 import { User } from '../user/entities/user.entity';
 
-import { AuthorizationService } from './authorization.services';
+import { AuthorizationService } from './authorization.service';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
+import { RolesGuard } from './roles/roles.guard';
+
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
@@ -28,7 +30,7 @@ export class AuthorizationController {
 
   @Put(':id/roles')
   @ApiBearerAuth('access-token')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   assignRoles(
     @Param('id') userId: string,
@@ -40,7 +42,8 @@ export class AuthorizationController {
 
   @Put('roles/permissions')
   @ApiBearerAuth('access-token')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
   assignPermissions(
     @Body() dto: AssignPermissionsDto,
     @CurrentUser() currentUserId: User,
@@ -59,11 +62,17 @@ export class AuthorizationController {
   }
 
   @Post('/role')
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
   createRole(@Body() dto: CreateRoleDto) {
     return this.authorizationService.createRole(dto);
   }
 
   @Put('/role/:id')
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
   updateRole(@Param('id') id: number, @Body() dto: UpdateRoleDto) {
     return this.authorizationService.updateRole(id, dto);
   }
