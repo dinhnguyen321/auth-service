@@ -10,8 +10,8 @@ import { JwtAuthGuard } from './guard/jwt-auth.guard';
 
 import { CurrentUser } from './decorators/current-user.decorator';
 
-import { RolesGuard } from '../authorization/roles/roles.guard';
-import { Roles } from '../authorization/roles/roles.decorators';
+import { RolesGuard } from '../authorization/guards/roles.guard';
+import { Roles } from '../authorization/decorators/roles.decorators';
 
 import { User } from '../user/entities/user.entity';
 @ApiTags('Auth')

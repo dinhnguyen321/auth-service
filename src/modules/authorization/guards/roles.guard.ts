@@ -8,7 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Reflector } from '@nestjs/core';
 import { Repository } from 'typeorm';
 
-import { ROLES_KEY } from './roles.decorators';
+import { ROLES_KEY } from '../decorators/roles.decorators';
 
 import { UserRole } from '../entities/user-role.entity';
 import { User } from '../../user/entities/user.entity';

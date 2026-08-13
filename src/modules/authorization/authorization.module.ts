@@ -8,6 +8,10 @@ import { AuthorizationController } from './authorization.controller';
 import { AuthorizationService } from './authorization.service';
 import { UserService } from '../user/user.service';
 import { User } from '../user/entities/user.entity';
+import { RolesService } from './roles/roles.service';
+import { RolesController } from './roles/roles.controller';
+import { PermissionsService } from './permissions/permissions.service';
+import { PermissionsController } from './permissions/permissions.controller';
 
 @Module({
   imports: [
@@ -19,7 +23,16 @@ import { User } from '../user/entities/user.entity';
       User,
     ]),
   ],
-  controllers: [AuthorizationController],
-  providers: [AuthorizationService, UserService],
+  controllers: [
+    AuthorizationController,
+    RolesController,
+    PermissionsController,
+  ],
+  providers: [
+    AuthorizationService,
+    UserService,
+    RolesService,
+    PermissionsService,
+  ],
 })
 export class AuthorizationModule {}
