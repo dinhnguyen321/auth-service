@@ -48,7 +48,10 @@ export class RolesGuard implements CanActivate {
     );
 
     if (!hasRole) {
-      throw new ForbiddenException('User does not have the required role');
+      throw new ForbiddenException({
+        code: 'INSUFFICIENT_ROLE',
+        message: 'You do not have the required role',
+      });
     }
     return hasRole;
   }

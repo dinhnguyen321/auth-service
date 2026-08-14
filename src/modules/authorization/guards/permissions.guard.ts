@@ -1,4 +1,9 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
 // import { Permission } from '../entities/permission.entity';
@@ -62,6 +67,12 @@ export class PermissionsGuard implements CanActivate {
       userPermission.includes(requiredPermission),
     );
 
-    return hasPermission;
+    if (!hasPermission) {
+      throw new ForbiddenException({
+        code: 'INSUFFICIENT_PERMISSION',
+        message: 'User does not have the required permission',
+      });
+    }
+    return true;
   }
 }
