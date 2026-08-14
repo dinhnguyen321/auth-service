@@ -9,11 +9,15 @@ import {
 } from '@nestjs/common';
 import { PermissionsService } from './permissions.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Roles } from '../decorators/roles.decorators';
-import { JwtAuthGuard } from '../../auth/guard/jwt-auth.guard';
-import { RolesGuard } from '../guards/roles.guard';
+
+import { Permissions } from '../decorators/permissions.decorators';
+
 import { CreatePermissionDto } from './dto/create-permission.dto';
 import { UpdatePermissionDto } from './dto/update-permission.dto';
+
+import { JwtAuthGuard } from '../../auth/guard/jwt-auth.guard';
+import { PermissionsGuard } from '../guards/permissions.guard';
+import { RolesGuard } from '../guards/roles.guard';
 
 @ApiTags('Permission')
 @Controller('permissions')
@@ -32,16 +36,16 @@ export class PermissionsController {
 
   @Post()
   @ApiBearerAuth('access-token')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('ADMIN')
+  @UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
+  @Permissions('user:create')
   createPermission(@Body() permission: CreatePermissionDto) {
     return this.permissionService.createPermission(permission);
   }
 
-  @Put(':i d')
+  @Put(':id')
   @ApiBearerAuth('access-token')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('ADMIN')
+  @UseGuards(JwtAuthGuard, RolesGuard, PermissionsGuard)
+  @Permissions('user:update')
   updatePermission(@Param('id') id: number, @Body() dto: UpdatePermissionDto) {
     return this.permissionService.updatePermission(id, dto);
   }

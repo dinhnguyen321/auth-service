@@ -15,7 +15,7 @@ export class PermissionsService {
   ) {}
 
   async createPermission(permission: CreatePermissionDto) {
-    const code = permission.module + permission.action;
+    const code = `${permission.module}:${permission.action}`;
 
     const getCodePermission = await this.permissionRepository.findOne({
       where: {
